@@ -1,7 +1,7 @@
-;
-; Programa, kurios parametrai - failų vardai.
-; Išveda kiekvieno failo statistinius duomenis: \
-; kiek buvo simbolių, kiek buvo žodžių, kiek mažųjų raidžių, kiek didžiųjų.
+;	
+; This program finds the statistics of a text file (number of characters, words, lower and upper case letters)
+; compiled using TASM (Turbo Assembler)
+; run by entering full text file name as parrameter
 ;
 
 .model small
