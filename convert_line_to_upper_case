@@ -1,0 +1,78 @@
+;
+; This program gets a single line input (max 255 characters) from the user and prints it back, turning lower case letters into upper case
+; assembled using TASM (Turbo Assembler)
+; 
+
+.model small
+.stack 100h
+
+.data
+	buffer db 255, ?, 255 dup (?), "$"		;
+	endLine db 13, 10, "$"
+	
+.code ; 1asdf6
+
+start:
+	
+	mov dx, @data					; duomenys perkelemi i data segmenta
+	mov ds, dx
+	
+	mov ah, 0Ah						; buffered keyboard input
+	mov dx, offset buffer
+	int 21h
+	
+	
+	xor cx, cx						; tas pats, kas "mov cx, 0", bet efektyviau
+	mov cl, buffer + 1				; +1 nes ten buffer'io simboliu kiekis
+	mov bx, offset buffer + 2		; +2 nes ivestis buffer'yje prasideda tik nuo 3 elemento
+									; to reikia, kad cikle butu einama per masyvo "Buffer" iveties elementus
+									; !!! offset buffer + 2 galimai reiskia, kad palieciamos(siuo atveju priskiriamos) visos reiksmes nuo to, kad ivesta
+	ciklas:
+		mov al, [bx]				; perkialiame bx esama reiksme i al
+		; duomenu apdorojimo pradzia
+		
+		cmp al, "a"					; tikrina ar raide nuo 'a' iki 127(simbolio numeris)
+		jae arDaugiauUza
+		
+atgal:	; duomenu apdorojimo pabaiga
+		mov [bx], al				; grazinam i bx apdorota reiksme al
+		inc bx						
+	loop ciklas
+	
+	
+	mov ah, 9						; perkialiame rasymo vieta i nauja eilute
+	mov dx, offset endLine		
+	int 21h
+	
+	mov ah, 40h						; write to file with handle
+	mov bx, 1						; 1 - std out
+	xor cx, cx						; 
+	mov cl, buffer + 1				; cl - kiek baitu parasyti
+	mov dx, offset buffer + 2		; dx - buffer'is, +2, nes reikalingi characteriai tik nuo 3 elemento
+	int 21h
+	
+
+	
+	
+	
+
+	
+	
+; Privalo buti programos pabaigoj, kad grizt i DOS ---------------------------------------------------------------------------------
+
+    mov ah, 4ch             ; iskvieciant "int 21h", kai AH registre 4Ch programa uzdaroma ir 
+    mov al, 0               ; yra griztama i DOSa, o AL yra programos "exit" kodas 
+    int 21h                 ; (panasiai kaip return 0; c arba c++)
+	
+; FUNKCIJOS	
+
+arDaugiauUza:
+	cmp al, "z"				;tikrina ar raide nuo 'a' iki 'z'
+	ja atgal				
+	
+	sub al, 32				; mazaja raide konvertuojame i didziaja
+	
+	jmp atgal
+	
+end start
+
