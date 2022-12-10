@@ -51,10 +51,10 @@ end_of_number:
 	inc cx
 	
 	mov ah, 02
-	ciklas:
+	cycle:
 		pop dx
 		int 21h
-	loop ciklas
+	loop cycle
 	
 ret
 	
